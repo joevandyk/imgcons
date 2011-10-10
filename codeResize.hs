@@ -137,7 +137,7 @@ checkIfGoodInput []     = False
 checkIfGoodInput [x,[]] = False
 checkIfGoodInput [[],y] = False
 checkIfGoodInput [x,y]
-    | length x <= 4 && isAllNumbers x && length y <= 4 && and isAllNumbers y = True
+    | length x <= 4 && and (isAllNumbers x) && length y <= 4 && and (isAllNumbers y) = True
     | otherwise = False
 
 isAllNumbers [] = []
