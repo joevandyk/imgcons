@@ -1,0 +1,27 @@
+Install:
+
+1. 
+    Create user with username user01 and a group with the name user01, add user01 to group user01.*
+2. 
+    Clone with 
+            hg clone https://bitbucket.org/ostochast/imgcons
+    in /home/user01
+
+    or go to https://bitbucket.org/ostochast/imgcons/downloads , download and extract to
+    /home/user01/imgcons
+3. 
+    Run ./makeAll.sh
+4. 
+    Go su and run
+            lighttpd -D -f lighttpd.conf
+    or 
+            sudo lighttpd -D -f lighttpd.conf
+5. 
+    Open browser at 127.0.0.1
+6. 
+    Upload >6 pictures.
+7. 
+    Read code.
+
+
+* or edit lighttpd.conf

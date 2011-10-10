@@ -1,0 +1,4 @@
+Install dependencies with:
+cabal install cgi fastcgi hdbc hdbc-sqlite3 xhtml split
+
+--Temporary until I figure out cabal and distribution package.
