@@ -2,6 +2,20 @@ This is a copy of https://bitbucket.org/ostochast/imgcons/src
 
 As practice, I'm going through the code, cleaning it up, and making it better.
 
+TODOs
+ * Make hlint happy with all the code
+ * Replace makeAll.sh script with a real build script
+ * Use a .cabal file
+ * Rewrite the sql to not suck
+ * Use blaze-html (I think?) for generating html
+ * Move away from fcgi and use snap framework
+ * Write tests
+ * Store images on s3
+ * Deploy somewhere
+ * Slowly rewrite using idiomatic haskell
+ * Use postgresql instead of sqlite3
+ 
+
 (original readme follows)
 
 Install:
