@@ -8,8 +8,8 @@ import CommonStuff
 {-
  - Self explanatory.
 -}
-removeEx :: [Char] -> [Char]
-removeEx x = filter (/='!') x
+removeEx :: String -> String
+removeEx = filter (/='!') 
 
 {-
  -  Form for resizing an image.
@@ -46,20 +46,20 @@ selectOptions =     option ! [value "custom"]<< "Custom"
 {-
  - Makes the html for the page body, input is file name and html paragraphs. Resize form is commented since resize.fcgi is not complete.
 -}
-imageLinksUrls :: HTML b => [Char] -> b -> Html
+imageLinksUrls :: HTML b => String -> b -> Html
 imageLinksUrls file additionalImageResizes = 
     thediv ! [identifier "header"]
                 << (h1 << anchor ! [href "index.fcgi"] << "imgcons"
                     +++ h2 << "A simple image upload site."
         +++ thediv ! [identifier "intro-box"] 
                 << h3 ! [identifier "intro"] 
-                        << ("If you would like to resize the image please use the form below (not available)."))
+                        << "If you would like to resize the image please use the form below (not available).")
         +++ (anchor ! [href (uploadDir ++ file) ] 
             << image ! [src (uploadDirCustom ++ "192x192!" ++ file), identifier "uploadedimageseize", alt "image"])
         +++ thediv ! [identifier "fileslist"]
             << (h3 << "Image URLs:"
-                            +++ (paragraph ! [theclass "sizename"] << ("Original size:")
-                            +++ input ! [theclass "sizebox", name "", size "43" ,value ("www.imgcons.com" ++ (drop 1 uploadDir) ++ file) ] 
+                            +++ (paragraph ! [theclass "sizename"] << "Original size:"
+                            +++ input ! [theclass "sizebox", name "", size "43" ,value ("www.imgcons.com" ++ drop 1 uploadDir ++ file) ] 
                             +++ anchor ! [theclass "arrow", href (uploadDir ++ file) ] << "→")
                     +++ additionalImageResizes)
 --           +++ h3 << "Resize image to:" 
@@ -72,7 +72,7 @@ imageLinksUrls file additionalImageResizes =
 {-
  - Self explanatory.
 -}
-splitAtComma :: [Char] -> [[Char]]
+splitAtComma :: String -> [String]
 splitAtComma [] = [""]
 splitAtComma (x:xs)
 	| x == ',' = "" : rest
@@ -83,9 +83,9 @@ splitAtComma (x:xs)
 {-
  - Creates a html paragraph for the provided image file and size.
 -}
-createImageResizeHtml :: [Char] -> [Char] -> Html
+createImageResizeHtml :: String -> String -> Html
 createImageResizeHtml file resize =  paragraph ! [theclass "sizename"] << (removeEx resize ++ " pixels:")
-                                     +++ input ! [theclass "sizebox", name "", size "43" ,value ("www.imgcons.com" ++ (drop 1 uploadDirCustom) ++ resize ++ file) ] 
+                                     +++ input ! [theclass "sizebox", name "", size "43", value ("www.imgcons.com" ++ drop 1 uploadDirCustom ++ resize ++ file) ] 
                                      +++ anchor ! [theclass "arrow", href (uploadDirCustom ++ resize ++ file) ] << "→" 
 
 
@@ -95,7 +95,7 @@ createImageResizeHtml file resize =  paragraph ! [theclass "sizename"] << (remov
 -}
 readCustomImageResizeSizes file conn = do
                                             a <- liftIO $ quickQuery' conn "SELECT resizedto FROM images WHERE name = ?" [toSql file]
-                                            return $ splitAtComma ((fromSql $ (concat a) !! 0):: String)
+                                            return $ splitAtComma ((fromSql $ head (concat a)):: String)
 
 
 {-
@@ -110,11 +110,11 @@ createAdditionalImageResizeSizesHtml file conn = do
  - Checks if the input file name is in the database, if it isn't it returns an error page, 
  - if it is in the database it creates the html page for the image and returns it.
 -} 
-showFile :: [Char] -> IO Html
+showFile :: String -> IO Html
 showFile file = do
                     conn <- connectSqlite3 "./databaseDir/imageDatabase.db"
                     a    <- liftIO $ quickQuery' conn "SELECT name FROM images WHERE name = ?" [toSql file]
-                    if (a == [])
+                    if a == []
                         then do disconnect conn
                                 return $ errorPage (paragraph << "image not found")
                         else do
@@ -143,7 +143,7 @@ checkInputFile file = length file `elem` [24,25]
 cgiMain = do 
             mn <- getInput "file"
             let passesFileCheck = checkInputFile $ myfromJust mn
-            if (not passesFileCheck) 
+            if not passesFileCheck
                 then output . renderHtml $ errorPage (paragraph << "Image not found/deleted. Redirecting to index page.")
                 else do
                         success <- liftIO $ showFile (myfromJust mn)

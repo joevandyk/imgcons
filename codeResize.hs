@@ -103,17 +103,17 @@ checkMenu name
 
 dropPercentage [] = []
 dropPercentage (x:xs) 
-    | elem '%' x == True = dropPercentage xs
+    | '%' `elem` x  = dropPercentage xs
     | otherwise = x : dropPercentage xs
 
 dropPixelage [] = []
 dropPixelage (x:xs) 
-    | elem 'x' x == True = dropPixelage xs
+    | 'x' `elem` x = dropPixelage xs
     | otherwise = x : dropPixelage xs
 
 giveEx x = x ++ "!"
 
-mysort = map (intercalate "x") . map (myshow) . sort . map (readAsInt) . map (splitOn "x") 
+mysort = map (intercalate "x" . myshow) . sort . map (readAsInt . splitOn "x") 
 readAsInt [x,y] = [read x :: Int, read y:: Int]
 myshow    [x,y] = [show x, show y]
 
@@ -137,13 +137,13 @@ checkIfGoodInput []     = False
 checkIfGoodInput [x,[]] = False
 checkIfGoodInput [[],y] = False
 checkIfGoodInput [x,y]
-    | (length x <= 4) && (and $ isAllNumbers x) && (length y <= 4) && (and $ isAllNumbers y) = True
+    | length x <= 4 && isAllNumbers x && length y <= 4 && and isAllNumbers y = True
     | otherwise = False
 
 isAllNumbers [] = []
 isAllNumbers (x:xs)
-    | (elem x "0123456789" == True) = [True] ++ isAllNumbers xs
-    | otherwise = [False] ++ isAllNumbers xs
+    | x `elem` "0123456789" = True : isAllNumbers xs
+    | otherwise = False : isAllNumbers xs
 
 checkResizeInput menuChoice resizeSize
     | menuChoice == "custom" && (length resizeSize <= 9) && (length resizeSize > 0) && checkIfGoodInput (mysplitOnX resizeSize) = resizeSize ++ "!"
